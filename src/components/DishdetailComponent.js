@@ -1,18 +1,18 @@
 import React from 'react';
 import moment from 'moment';
 import { Card, CardImg, CardImgOverlay, CardText, CardBody,
-	CardTitle } from 'reactstrap';
-
+	CardTitle, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+import { Link } from'react-router-dom';
 
 	function RenderDish({dish}) {
 
-		if(dish.length >0) {
+		if(dish!=null) {
 			return (
 				<Card>
-					<CardImg top src={dish[0].image} alt={dish[0].name} />
+					<CardImg top src={dish.image} alt={dish.name} />
 						<CardBody>
-							<CardTitle>{dish[0].name}</CardTitle>
-							<CardText>{dish[0].description}</CardText>
+							<CardTitle>{dish.name}</CardTitle>
+							<CardText>{dish.description}</CardText>
 						</CardBody>
 				</Card>
 			);
@@ -22,20 +22,25 @@ import { Card, CardImg, CardImgOverlay, CardText, CardBody,
 	}
 
 	function RenderComments({comments}) {
-		console.log("comments="+JSON.stringify(comments));
 		if (comments != null) {
 			console.log("comments="+JSON.stringify(comments));
             return(
                 <div>
                     <h4>Comments</h4>
-                        {comments.map((item) => {
+                    <ul className="list-unstyled">
+                        {comments.map((comment) => {
                             return(
-                            <ul key={item.id} className="text-left list-unstyled">
-                                <li>{item.comment}</li>
-                                <li> -- {item.author} , {item.date}</li>
-                            </ul>
+                                <li key={comment.id}>
+			                    <p>{comment.comment}</p>
+			                    <p>-- {comment.author},
+			                    &nbsp;
+			                    {new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}
+			                    </p>
+			                </li>
+                            
                             );
                         })}
+                    </ul>
                 </div>
             );
         }
@@ -43,31 +48,31 @@ import { Card, CardImg, CardImgOverlay, CardText, CardBody,
             return(
                 <div></div>
             );
-		/// const coments = comments.map(comment => {
-  //           return (
-  //               <li key={comment.id}>
-  //                   <p>{comment.comment}</p>
-  //                   <p>-- {comment.author},
-  //                   &nbsp;
-  //                   {new Intl.DateTimeFormat('pt-BR', {
-  //                       day: '2-digit',
-  //                       month: 'long',
-  //                       year: 'numeric'
+		 /// const coments = comments.map(comment => {
+   //          return (
+   //              <li key={comment.id}>
+   //                  <p>{comment.comment}</p>
+   //                  <p>-- {comment.author},
+   //                  &nbsp;
+   //                  {new Intl.DateTimeFormat('pt-BR', {
+   //                      day: '2-digit',
+   //                      month: 'long',
+   //                      year: 'numeric'
 
-  //                   }).format(new Date(comment.date))}
-  //                   </p>
-  //               </li>
-  //           )
-  //       })
-  //       return (
-  //           <div className='col-12 col-md-5 m-1'>
-  //               <h4> Comments </h4>
-  //               <ul className='list-unstyled'>
-  //                   {coments}
-  //               </ul>
+   //                  }).format(new Date(comment.date))}
+   //                  </p>
+   //              </li>
+   //          )
+   //      })
+   //      return (
+   //          <div className='col-12 col-md-5 m-1'>
+   //              <h4> Comments </h4>
+   //              <ul className='list-unstyled'>
+   //                  {coments}
+   //              </ul>
 
-  //           </div>
-  //       )
+   //          </div>
+   //      );
 		/// console.log("comments="+JSON.stringify(comments));
 		// var comments_section = [];
 		// if(comments!=null) {
@@ -94,12 +99,22 @@ import { Card, CardImg, CardImgOverlay, CardText, CardBody,
 	const DishDetail = (props) =>{
 		return(
 			<div className = "container">
+				<div className="row">
+					<Breadcrumb>
+						<BreadcrumbItem><Link to='/menu'>Menu</Link></BreadcrumbItem>
+						<BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+					</Breadcrumb>
+					<div className="col-12">
+						<h3>{props.dish.name}</h3>
+						<hr />
+					</div>
+				</div>
 				<div className = "row">
 					<div className = "col-12 col-md-5 m-1">
 						<RenderDish dish = {props.dish}/>
 					</div>
 					<div className = "col-12 col-md-5 m-1">
-						<RenderComments comments = {props.dish.comments}/>
+						<RenderComments comments = {props.comments}/>
 					</div>
 				</div>
 			</div>
